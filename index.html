@@ -249,7 +249,7 @@
         <th style="width:8%">Solicitação</th>
         <th style="width:9%">Status</th>
         <th style="width:8%">Valor Est.</th>
-        <th style="width:43%">FUP — Comunicações &amp; Andamento</th>
+        <th style="width:51%">FUP — Comunicações &amp; Andamento</th>
         <th style="width:8%"></th>
       </tr></thead>
       <tbody id="pipe-body"><tr><td colspan="8" style="text-align:center;padding:32px;opacity:.4;">Carregando…</td></tr></tbody>
@@ -451,7 +451,7 @@ async function renderPipeline(){
   body.innerHTML=rows.map(p=>{
     const[sc,sl]=pipeStatusMap[p.status]||['badge-prog','Em andamento'];
     const dt=p.request_date?new Date(p.request_date+'T12:00:00').toLocaleDateString('pt-BR'):'—';
-    const fupHtml=p.fup?`${esc(p.fup)}<br><span class="fup-step">${esc(p.step||'')}</span>`:`<span class="fup-step">${esc(p.step||'')}</span>`;
+    const fupHtml=p.fup?esc(p.fup):'<span class="resp-na">—</span>';
     const acts=isEditor?`<button class="edit-btn" onclick="editRow('pipe',${p.id})" title="Editar">✎</button><button class="del-btn" onclick="delRow('pipe',${p.id})" title="Excluir">✕</button>`:'';
     return`<tr>
       <td class="bold">${esc(p.company)}</td>
@@ -546,10 +546,7 @@ const pipeForm=()=>`
       <select id="f-status"><option value="prog">Execução em andamento</option><option value="late">Envio atrasado</option><option value="done">Enviado</option><option value="rev">Aguardando Revisão</option><option value="fup">Necessário FUP</option></select>
     </div>
   </div>
-  <div class="form-row">
-    <div class="form-group"><label>Valor Est.</label><input id="f-value" placeholder="R$ 150k"/></div>
-    <div class="form-group"><label>Etapa do processo</label><input id="f-step" placeholder="Ex: Negociação"/></div>
-  </div>
+  <div class="form-group"><label>Valor Est.</label><input id="f-value" placeholder="R$ 150k"/></div>
   <div class="form-group"><label>FUP — Histórico de comunicações</label><textarea id="f-fup" rows="3" placeholder="Resumo dos contatos e andamento..."></textarea></div>
 `;
 
@@ -587,7 +584,6 @@ function openModal(mode,data=null){
       document.getElementById('f-date').value=data.request_date||'';
       document.getElementById('f-status').value=data.status||'prog';
       document.getElementById('f-value').value=data.value_est||'';
-      document.getElementById('f-step').value=data.step||'';
       document.getElementById('f-fup').value=data.fup||'';
     }
   }
@@ -623,7 +619,7 @@ async function saveModal(){
     const obj={
       company:v('f-company'),scope:v('f-scope'),request_date:v('f-date')||null,
       status:v('f-status'),
-      value_est:v('f-value')||'—',step:v('f-step'),fup:v('f-fup'),
+      value_est:v('f-value')||'—',fup:v('f-fup'),
       updated_at:new Date().toISOString()
     };
     if(!obj.company){alert('Informe o nome da empresa.');btn.textContent='Salvar';btn.disabled=false;return;}
@@ -663,11 +659,11 @@ function exportExcel(){
     const pl={high:'Alta',mid:'Média',low:'Baixa'}[p.priority]||'';
     pr+=`<Row>${[p.company,p.scope,sl,w,pl,p.stage,p.client].map(v=>`<Cell><Data ss:Type="String">${ex(v)}</Data></Cell>`).join('')}</Row>`;
   });
-  let pi=`<Row>${['Empresa','Escopo','Solicitação','Status','Valor Est.','FUP','Etapa'].map(h=>`<Cell ${hs}><Data ss:Type="String">${h}</Data></Cell>`).join('')}</Row>`;
+  let pi=`<Row>${['Empresa','Escopo','Solicitação','Status','Valor Est.','FUP'].map(h=>`<Cell ${hs}><Data ss:Type="String">${h}</Data></Cell>`).join('')}</Row>`;
   _pipeline.forEach(p=>{
     const dt=p.request_date?new Date(p.request_date+'T12:00:00').toLocaleDateString('pt-BR'):'';
     const sl={prog:'Execução em andamento',late:'Envio atrasado',done:'Enviado',rev:'Aguardando Revisão',fup:'Necessário FUP'}[p.status]||p.status;
-    pi+=`<Row>${[p.company,p.scope,dt,sl,p.value_est,p.fup,p.step].map(v=>`<Cell><Data ss:Type="String">${ex(v)}</Data></Cell>`).join('')}</Row>`;
+    pi+=`<Row>${[p.company,p.scope,dt,sl,p.value_est,p.fup].map(v=>`<Cell><Data ss:Type="String">${ex(v)}</Data></Cell>`).join('')}</Row>`;
   });
   const xml=`<?xml version="1.0"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Projetos"><Table><Row><Cell ss:MergeAcross="7" ${ah}><Data ss:Type="String">Projetos — CF Baker Tilly · ${ds} · Semana ${week}</Data></Cell></Row>${pr}</Table></Worksheet><Worksheet ss:Name="Pipeline"><Table><Row><Cell ss:MergeAcross="7" ${at}><Data ss:Type="String">Pipeline — CF Baker Tilly · ${ds} · Semana ${week}</Data></Cell></Row>${pi}</Table></Worksheet></Workbook>`;
   const a=document.createElement('a');
