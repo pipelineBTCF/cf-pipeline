@@ -472,7 +472,7 @@ async function renderPipeline(){
     <div class="card c-total"><div class="card-num">${data.length}</div><div class="card-label">Propostas</div></div>
     <div class="card c-late"><div class="card-num">${data.filter(x=>x.status==='late').length}</div><div class="card-label">Atrasadas</div></div>
     <div class="card c-prog"><div class="card-num">${data.filter(x=>x.status==='fup').length}</div><div class="card-label">Aguard. FUP</div></div>
-    <div class="card c-ok"><div class="card-num">${data.filter(x=>x.status==='done').length}</div><div class="card-label">Fechadas</div></div>
+    <div class="card c-ok"><div class="card-num">${data.filter(x=>x.status==='done').length}</div><div class="card-label">Enviado</div></div>
     ${openVal>0?`<div class="card c-total"><div class="card-num">R$ ${(openVal/1000).toFixed(0)}k</div><div class="card-label">Pipeline aberto</div></div>`:''}
   `;
   document.getElementById('pipe-footer').textContent=`${rows.length} proposta${rows.length!==1?'s':''} exibida${rows.length!==1?'s':''}`;
