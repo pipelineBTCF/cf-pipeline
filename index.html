@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -143,6 +144,59 @@
   .login-error{font-size:12px;color:#C0392B;margin-top:-7px;margin-bottom:10px;display:none;}
   .login-error.show{display:block;}
   .week-hint{font-size:11px;color:var(--teal);margin-top:3px;opacity:.8;}
+
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px){
+    /* Header compacto */
+    header{padding:0 14px;height:auto;min-height:50px;flex-wrap:wrap;gap:8px;padding-top:10px;padding-bottom:10px;}
+    .logo{font-size:13px;}
+    .header-date{display:none;}
+    .export-group{gap:4px;}
+    .exp-btn{padding:4px 8px;font-size:10px;}
+    .auth-btn{padding:4px 10px;font-size:11px;}
+
+    /* Tabs */
+    .tabs{padding:0 14px;}
+    .tab{padding:8px 14px;font-size:11px;}
+
+    /* Page */
+    .page{padding:14px 12px 40px;}
+
+    /* Cards menores */
+    .summary{gap:7px;}
+    .card{padding:10px 12px;min-width:80px;}
+    .card-num{font-size:20px;}
+    .card-label{font-size:10px;}
+
+    /* Tabela: scroll horizontal */
+    .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:8px;}
+    table{min-width:600px;font-size:11px;}
+    th{padding:8px 10px;font-size:9px;}
+    td{padding:8px 10px;font-size:11px;}
+
+    /* Projetos: esconder colunas menos críticas no mobile */
+    .col-hide-mobile{display:none;}
+
+    /* Botões de ação sempre visíveis no mobile */
+    .edit-btn,.del-btn{opacity:1!important;}
+
+    /* Filtros scroll horizontal */
+    .filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+    .filters::-webkit-scrollbar{display:none;}
+    .filter-btn{white-space:nowrap;flex-shrink:0;}
+
+    /* Modal full screen no mobile */
+    .modal{width:100%;max-width:100%;border-radius:12px 12px 0 0;position:fixed;bottom:0;left:0;right:0;max-height:85vh;padding:20px 16px;}
+    .modal-bg.open{align-items:flex-end;}
+    .form-row{flex-direction:column;gap:0;}
+
+    /* Add button */
+    .add-row-btn{font-size:11px;padding:6px 12px;}
+
+    /* Locked notice */
+    .locked-notice{font-size:11px;padding:8px 12px;}
+  }
 
   /* PRINT */
   @media print{
