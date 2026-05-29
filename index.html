@@ -361,22 +361,24 @@ function setLoading(on){document.getElementById('loading-bar').classList.toggle(
    WEEK CALC
 ══════════════════════════════════════════ */
 function calcWeek(s,e){
-  if(!s||!e)return null;
+  if(!s)return null;
   const now=new Date();now.setHours(0,0,0,0);
   const start=new Date(s);start.setHours(0,0,0,0);
-  const end=new Date(e);end.setHours(0,0,0,0);
-  if(isNaN(start)||isNaN(end)||end<=start)return null;
+  if(isNaN(start))return null;
   const ms=7*24*60*60*1000;
-  const total=Math.ceil((end-start)/ms);
   const elapsed=now-start;
-  if(elapsed<0)return`0/${total}`;
-  return`${Math.min(Math.ceil(elapsed/ms),total)}/${total}`;
+  const current=elapsed<0?0:(Math.ceil(elapsed/ms)||1);
+  if(!e)return`${current}/?`;
+  const end=new Date(e);end.setHours(0,0,0,0);
+  if(isNaN(end)||end<=start)return`${current}/?`;
+  const total=Math.ceil((end-start)/ms);
+  return`${current}/${total}`;
 }
 function weekCell(p){
   const auto=calcWeek(p.start_date,p.end_date);
   if(auto){
-    const ef=new Date(p.end_date).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
-    return`<span class="week-auto" title="Automático · Término: ${ef}">${auto}</span>`;
+    const tip=p.end_date?new Date(p.end_date).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}):'sem data final';
+    return`<span class="week-auto" title="Automático · Término: ${tip}">${auto}</span>`;
   }
   return'<span class="resp-na">—</span>';
 }
